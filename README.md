@@ -1,6 +1,6 @@
 # LiroBoy (LBY)
 
-![Logo do LiroBoy](https://github.com/liroboy/liroboy-LBY/001.jpg)
+![Logo do LiroBoy](https://github.com/liroboy/liroboy-LBY/blob/master/001.jpg)
 
 LiroBoy é uma criptomoeda inovadora que utiliza tecnologia de mineração baseada em QR Code. O projeto visa simplificar o processo de mineração e transações, permitindo que usuários comuns participem do mundo das criptomoedas de maneira acessível e divertida.
 
@@ -22,5 +22,3 @@ Antes de começar, você precisa ter instalado:
 
 Você pode instalar as bibliotecas necessárias utilizando o seguinte comando:
 
-```bash
-pip install requests cryptography
