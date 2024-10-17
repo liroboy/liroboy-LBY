@@ -18,8 +18,13 @@ Antes de começar, você precisa ter instalado:
 - Python 3.6 ou superior
 - Bibliotecas necessárias:
 Você pode instalar as bibliotecas necessárias utilizando o seguinte comando:
+
 pip install requests
+
 pip install qrcode[pil]
+
 pip install PyQt5
+
 pip install Flask
+
 pip install numpy
