@@ -2,7 +2,7 @@
 
 ![LiroBoy](https://github.com/liroboy/liroboy-LBY/blob/liroboy/001.jpg)
 
-LiroBoy is an innovative cryptocurrency that uses QR Code-based mining technology. The project aims to simplify the mining and transaction process, allowing ordinary users to participate in the cryptocurrency world in an accessible and fun way.
+little boy is an innovative cryptocurrency that uses QR Code-based mining technology. The project aims to simplify the mining and transaction process, allowing ordinary users to participate in the cryptocurrency world in an accessible and fun way.
 
 ## Features
 
