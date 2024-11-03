@@ -163,13 +163,17 @@ class CryptoClient(QtWidgets.QWidget):
         self.initUI()
         self.miner_thread = MinerThread()
         self.miner_thread.block_mined.connect(self.update_mining_status)
-        self.wallet_created = False  # Para rastrear se a carteira foi criada
+        self.wallet_created = False
 
     def initUI(self):
         self.setWindowTitle('Cliente Descentralizado de Criptomoeda LiroBoy-(LBY)')
         self.setGeometry(100, 100, 400, 600)
 
         layout = QVBoxLayout()
+
+        self.node_input = QLineEdit(self)
+        self.node_input.setPlaceholderText('Digite o endereço do nó (Ex: http://localhost:5000)')
+        layout.addWidget(self.node_input)
 
         self.create_wallet_btn = QPushButton('Criar Carteira', self)
         self.create_wallet_btn.clicked.connect(self.create_wallet)
@@ -190,7 +194,6 @@ class CryptoClient(QtWidgets.QWidget):
         self.check_balance_btn.clicked.connect(self.check_balance)
         layout.addWidget(self.check_balance_btn)
 
-        # Campo para inserir o endereço da carteira existente
         self.address_input = QLineEdit(self)
         self.address_input.setPlaceholderText('Endereço da Carteira (Existente)')
         layout.addWidget(self.address_input)
@@ -202,7 +205,6 @@ class CryptoClient(QtWidgets.QWidget):
         self.send_amount_input.setPlaceholderText('Valor a enviar')
         layout.addWidget(self.send_amount_input)
 
-        # Novo campo para endereço da carteira que envia
         self.sender_input = QLineEdit(self)
         self.sender_input.setPlaceholderText('Endereço da Carteira que Envia')
         layout.addWidget(self.sender_input)
@@ -226,31 +228,18 @@ class CryptoClient(QtWidgets.QWidget):
         self.mining_status_label = QLabel('Minerando... Bloco: Nenhum', self)
         layout.addWidget(self.mining_status_label)
 
-        # Área para mostrar o QR Code
         self.qr_code_label = QLabel(self)
-
-        # Adiciona um QScrollArea
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
-
-        # Cria um widget para a área de rolagem
         self.scroll_area_content = QWidget()
         self.scroll_area_layout = QVBoxLayout(self.scroll_area_content)
-
-        # Adiciona o QLabel do QR Code à área de rolagem
         self.scroll_area_layout.addWidget(self.qr_code_label)
         self.scroll_area.setWidget(self.scroll_area_content)
         layout.addWidget(self.scroll_area)
 
-        # Botão para ampliar o QR Code
         self.maximize_qr_btn = QPushButton('Ampliar QR Code', self)
         self.maximize_qr_btn.clicked.connect(self.maximize_qr_code)
         layout.addWidget(self.maximize_qr_btn)
-        
-        # Adicionando o botão "Local API"
-        self.local_api_btn = QPushButton('Local API', self)
-        self.local_api_btn.clicked.connect(self.show_local_api_options)
-        layout.addWidget(self.local_api_btn)
 
         self.setLayout(layout)
 
