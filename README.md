@@ -1,23 +1,23 @@
-# LiroBoy (LBY)
+# little boy (LBY)
 
 ![LiroBoy](https://github.com/liroboy/liroboy-LBY/blob/liroboy/001.jpg)
 
-LiroBoy é uma criptomoeda inovadora que utiliza tecnologia de mineração baseada em QR Code. O projeto visa simplificar o processo de mineração e transações, permitindo que usuários comuns participem do mundo das criptomoedas de maneira acessível e divertida.
+LiroBoy is an innovative cryptocurrency that uses QR Code-based mining technology. The project aims to simplify the mining and transaction process, allowing ordinary users to participate in the cryptocurrency world in an accessible and fun way.
 
-## Funcionalidades
+## Features
 
-- **Mineração com QR Code**: LiroBoy utiliza códigos QR para facilitar o processo de mineração e transações.
-- **Carteira Digital**: Os usuários podem criar e gerenciar suas próprias carteiras para armazenar e transferir LBY.
-- **Transações Rápidas e Seguras**: Através de uma rede blockchain, as transações são processadas de forma rápida e segura.
-- **Interface Amigável**: O software possui uma interface simples, tornando a experiência do usuário intuitiva.
+- **QR Code Mining**: LiroBoy uses QR codes to facilitate the mining and transaction process.
+- **Digital Wallet**: Users can create and manage their own wallets to store and transfer LBY.
+- **Fast and Secure Transactions**: Through a blockchain network, transactions are processed quickly and securely.
+- **User-Friendly Interface**: The software has a simple interface, making the user experience intuitive.
 
-## Requisitos
+## Requirements
 
-Antes de começar, você precisa ter instalado:
+Before you start, you need to have installed:
 
-- Python 3.6 ou superior
-- Bibliotecas necessárias:
-Você pode instalar as bibliotecas necessárias utilizando o seguinte comando:
+- Python 3.6 or higher
+- Required libraries:
+You can install the required libraries using the following command:
 
 pip install requests
 
