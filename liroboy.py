@@ -166,7 +166,7 @@ class CryptoClient(QtWidgets.QWidget):
         self.wallet_created = False
 
     def initUI(self):
-        self.setWindowTitle('Cliente Descentralizado de Criptomoeda LiroBoy-(LBY)')
+        self.setWindowTitle('Cliente Descentralizado de Criptomoeda little boy-(LBY)')
         self.setGeometry(100, 100, 400, 600)
 
         layout = QVBoxLayout()
