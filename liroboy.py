@@ -156,11 +156,12 @@ class QrCodeViewer(QtWidgets.QWidget):
 
         layout.addWidget(qr_code_label)
         self.setLayout(layout)
-
+        
 class CryptoClient(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.node_url = None  # Armazena a URL do nó
+        self.valid_node_url = 'http://localhost:5000'  # URL válida do nó
         self.initUI()
         self.miner_thread = MinerThread()
         self.miner_thread.block_mined.connect(self.update_mining_status)
@@ -227,10 +228,12 @@ class CryptoClient(QtWidgets.QWidget):
 
         self.send_btn = QPushButton('Enviar Saldo', self)
         self.send_btn.clicked.connect(self.send_balance)
+        self.send_btn.setEnabled(False)  # Inicialmente desativado
         layout.addWidget(self.send_btn)
 
         self.start_mining_btn = QPushButton('Iniciar Mineração com Endereço Existente', self)
         self.start_mining_btn.clicked.connect(self.start_mining_if_wallet_exists)
+        self.start_mining_btn.setEnabled(False)  # Inicialmente desativado
         layout.addWidget(self.start_mining_btn)
 
         self.mining_status_label = QLabel('Minerando... Bloco: Nenhum', self)
@@ -247,21 +250,42 @@ class CryptoClient(QtWidgets.QWidget):
 
         self.maximize_qr_btn = QPushButton('Ampliar QR Code', self)
         self.maximize_qr_btn.clicked.connect(self.maximize_qr_code)
+        self.maximize_qr_btn.setEnabled(False)  # Inicialmente desativado
         layout.addWidget(self.maximize_qr_btn)
 
         self.setLayout(layout)
-
+        
     def set_node_url(self):
         """Define a URL do nó e ativa os botões se for válida."""
-        url = self.node_input.text().strip()
+        url = self.node_input.text().strip()  # Remove espaços em branco
+
+        # Verifica se a URL está vazia
         if not url:
             QtWidgets.QMessageBox.warning(self, 'URL do Nó', 'Por favor, insira uma URL válida do nó.')
             return
+    
+        # Verifica se a URL inserida é a URL válida
+        if url == self.valid_node_url:
+            self.node_url = url  # Armazena a URL do nó
+            # Ativar os botões de funcionalidade
+            self.create_wallet_btn.setEnabled(True)
+            self.copy_private_key_btn.setEnabled(True)
+            self.check_balance_btn.setEnabled(True)
+            self.send_btn.setEnabled(True)
+            self.start_mining_btn.setEnabled(True)
+            self.maximize_qr_btn.setEnabled(True)
+            QtWidgets.QMessageBox.information(self, "Sucesso", "URL do nó confirmada com sucesso.")
+        else:
+            QtWidgets.QMessageBox.warning(self, "Erro", "URL do nó inválida. Verifique e tente novamente.")
+            # Desativar os botões de funcionalidade se a URL estiver incorreta
+            self.create_wallet_btn.setEnabled(False)
+            self.copy_private_key_btn.setEnabled(False)
+            self.check_balance_btn.setEnabled(False)
+            self.send_btn.setEnabled(False)
+            self.start_mining_btn.setEnabled(False)
+            self.maximize_qr_btn.setEnabled(False)
 
-        self.node_url = url  # Salva a URL do nó
-        self.activate_buttons()  # Ativa os botões de funcionalidade
-        QtWidgets.QMessageBox.information(self, 'URL do Nó', f'Nó definido para: {url}')
-
+            
     def activate_buttons(self):
         """Ativa os botões de funcionalidade."""
         self.create_wallet_btn.setEnabled(True)
