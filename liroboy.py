@@ -160,6 +160,7 @@ class QrCodeViewer(QtWidgets.QWidget):
 class CryptoClient(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        self.node_url = None  # Armazena a URL do nó
         self.initUI()
         self.miner_thread = MinerThread()
         self.miner_thread.block_mined.connect(self.update_mining_status)
@@ -171,27 +172,34 @@ class CryptoClient(QtWidgets.QWidget):
 
         layout = QVBoxLayout()
 
+        # Campo de entrada para a URL do nó
         self.node_input = QLineEdit(self)
         self.node_input.setPlaceholderText('Digite o endereço do nó (Ex: http://localhost:5000)')
         layout.addWidget(self.node_input)
 
+        # Botão para confirmar a URL do nó
+        self.set_node_btn = QPushButton('Confirmar Nó', self)
+        self.set_node_btn.clicked.connect(self.set_node_url)
+        layout.addWidget(self.set_node_btn)
+
+        # Botões de funcionalidade, inicialmente desativados
         self.create_wallet_btn = QPushButton('Criar Carteira', self)
         self.create_wallet_btn.clicked.connect(self.create_wallet)
+        self.create_wallet_btn.setEnabled(False)
         layout.addWidget(self.create_wallet_btn)
 
+        # Demais botões e campos de entrada
         self.wallet_info = QLabel('', self)
         layout.addWidget(self.wallet_info)
 
         self.copy_private_key_btn = QPushButton('Copiar Chave Privada', self)
         self.copy_private_key_btn.clicked.connect(self.copy_private_key)
+        self.copy_private_key_btn.setEnabled(False)
         layout.addWidget(self.copy_private_key_btn)
-
-        self.copy_address_btn = QPushButton('Copiar Endereço', self)
-        self.copy_address_btn.clicked.connect(self.copy_address)
-        layout.addWidget(self.copy_address_btn)
 
         self.check_balance_btn = QPushButton('Ver Saldo', self)
         self.check_balance_btn.clicked.connect(self.check_balance)
+        self.check_balance_btn.setEnabled(False)
         layout.addWidget(self.check_balance_btn)
 
         self.address_input = QLineEdit(self)
@@ -242,6 +250,65 @@ class CryptoClient(QtWidgets.QWidget):
         layout.addWidget(self.maximize_qr_btn)
 
         self.setLayout(layout)
+
+    def set_node_url(self):
+        """Define a URL do nó e ativa os botões se for válida."""
+        url = self.node_input.text().strip()
+        if not url:
+            QtWidgets.QMessageBox.warning(self, 'URL do Nó', 'Por favor, insira uma URL válida do nó.')
+            return
+
+        self.node_url = url  # Salva a URL do nó
+        self.activate_buttons()  # Ativa os botões de funcionalidade
+        QtWidgets.QMessageBox.information(self, 'URL do Nó', f'Nó definido para: {url}')
+
+    def activate_buttons(self):
+        """Ativa os botões de funcionalidade."""
+        self.create_wallet_btn.setEnabled(True)
+        self.copy_private_key_btn.setEnabled(True)
+        self.check_balance_btn.setEnabled(True)
+        # Ativa outros botões conforme necessário
+
+    def create_wallet(self):
+        """Cria uma nova carteira usando a URL do nó."""
+        if not self.node_url:
+            self.display_error('Por favor, defina a URL do nó primeiro.')
+            return
+
+        try:
+            response = requests.get(f'{self.node_url}/wallet/create', timeout=5)
+            if response.status_code == 201:
+                wallet_info = response.json()
+                self.wallet_info.setText(f"Endereço: {wallet_info['address']}\nChave Privada: {wallet_info['private_key']}")
+            else:
+                self.display_error("Erro ao criar a carteira.")
+        except requests.exceptions.RequestException as e:
+            self.display_error(f"Erro de conexão: {e}")
+
+    def check_balance(self):
+        """Consulta o saldo de uma carteira na URL do nó especificado."""
+        if not self.node_url:
+            self.display_error('Por favor, defina a URL do nó primeiro.')
+            return
+
+        address = self.address_input.text().strip()
+        if not address:
+            self.balance_label.setText('Por favor, insira um endereço de carteira.')
+            return
+
+        try:
+            response = requests.get(f'{self.node_url}/balance/{address}')
+            if response.status_code == 200:
+                balance_info = response.json()
+                self.balance_label.setText(f'Saldo: {balance_info["balance"]}')
+            else:
+                self.balance_label.setText('Erro ao verificar o saldo.')
+        except Exception as e:
+            self.balance_label.setText(f'Erro: {e}')
+
+    def display_error(self, message):
+        """Exibe uma mensagem de erro."""
+        QtWidgets.QMessageBox.critical(self, 'Erro', message)
 
     def show_local_api_options(self):
         options = [
@@ -464,4 +531,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
