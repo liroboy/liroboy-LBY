@@ -25,6 +25,6 @@ IF EXIST "%control_file%" (
     echo Pacotes instalados. > "%control_file%"
 )
 
-REM Inicia o aplicativo littleboy(LBY)
-start "" "littleboy(LBY).exe"
-start "" "C:\Users\ryant\AppData\Local\Programs\Python\Python311\python.exe" "littleboy(LBY).py"
+REM Inicia o aplicativo LiroBoy e o script Python
+start "" "%~dp0LiroBoy-(LBY).exe"
+start "" "python" "%~dp0liroboy.py"
