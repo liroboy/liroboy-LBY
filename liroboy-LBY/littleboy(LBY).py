@@ -156,41 +156,53 @@ class QrCodeViewer(QtWidgets.QWidget):
 
         layout.addWidget(qr_code_label)
         self.setLayout(layout)
-
+        
 class CryptoClient(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        self.node_url = None  # Armazena a URL do nó
+        self.valid_node_url = 'http://localhost:5000'  # URL válida do nó
         self.initUI()
         self.miner_thread = MinerThread()
         self.miner_thread.block_mined.connect(self.update_mining_status)
-        self.wallet_created = False  # Para rastrear se a carteira foi criada
+        self.wallet_created = False
 
     def initUI(self):
-        self.setWindowTitle('Cliente Descentralizado de Criptomoeda LiroBoy-(LBY)')
+        self.setWindowTitle('Cliente Descentralizado de Criptomoeda little boy-(LBY)')
         self.setGeometry(100, 100, 400, 600)
 
         layout = QVBoxLayout()
 
+        # Campo de entrada para a URL do nó
+        self.node_input = QLineEdit(self)
+        self.node_input.setPlaceholderText('Digite o endereço do nó (Ex: http://localhost:5000)')
+        layout.addWidget(self.node_input)
+
+        # Botão para confirmar a URL do nó
+        self.set_node_btn = QPushButton('Confirmar Nó', self)
+        self.set_node_btn.clicked.connect(self.set_node_url)
+        layout.addWidget(self.set_node_btn)
+
+        # Botões de funcionalidade, inicialmente desativados
         self.create_wallet_btn = QPushButton('Criar Carteira', self)
         self.create_wallet_btn.clicked.connect(self.create_wallet)
+        self.create_wallet_btn.setEnabled(False)
         layout.addWidget(self.create_wallet_btn)
 
+        # Demais botões e campos de entrada
         self.wallet_info = QLabel('', self)
         layout.addWidget(self.wallet_info)
 
         self.copy_private_key_btn = QPushButton('Copiar Chave Privada', self)
         self.copy_private_key_btn.clicked.connect(self.copy_private_key)
+        self.copy_private_key_btn.setEnabled(False)
         layout.addWidget(self.copy_private_key_btn)
-
-        self.copy_address_btn = QPushButton('Copiar Endereço', self)
-        self.copy_address_btn.clicked.connect(self.copy_address)
-        layout.addWidget(self.copy_address_btn)
 
         self.check_balance_btn = QPushButton('Ver Saldo', self)
         self.check_balance_btn.clicked.connect(self.check_balance)
+        self.check_balance_btn.setEnabled(False)
         layout.addWidget(self.check_balance_btn)
 
-        # Campo para inserir o endereço da carteira existente
         self.address_input = QLineEdit(self)
         self.address_input.setPlaceholderText('Endereço da Carteira (Existente)')
         layout.addWidget(self.address_input)
@@ -202,7 +214,6 @@ class CryptoClient(QtWidgets.QWidget):
         self.send_amount_input.setPlaceholderText('Valor a enviar')
         layout.addWidget(self.send_amount_input)
 
-        # Novo campo para endereço da carteira que envia
         self.sender_input = QLineEdit(self)
         self.sender_input.setPlaceholderText('Endereço da Carteira que Envia')
         layout.addWidget(self.sender_input)
@@ -217,42 +228,111 @@ class CryptoClient(QtWidgets.QWidget):
 
         self.send_btn = QPushButton('Enviar Saldo', self)
         self.send_btn.clicked.connect(self.send_balance)
+        self.send_btn.setEnabled(False)  # Inicialmente desativado
         layout.addWidget(self.send_btn)
 
         self.start_mining_btn = QPushButton('Iniciar Mineração com Endereço Existente', self)
         self.start_mining_btn.clicked.connect(self.start_mining_if_wallet_exists)
+        self.start_mining_btn.setEnabled(False)  # Inicialmente desativado
         layout.addWidget(self.start_mining_btn)
 
         self.mining_status_label = QLabel('Minerando... Bloco: Nenhum', self)
         layout.addWidget(self.mining_status_label)
 
-        # Área para mostrar o QR Code
         self.qr_code_label = QLabel(self)
-
-        # Adiciona um QScrollArea
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
-
-        # Cria um widget para a área de rolagem
         self.scroll_area_content = QWidget()
         self.scroll_area_layout = QVBoxLayout(self.scroll_area_content)
-
-        # Adiciona o QLabel do QR Code à área de rolagem
         self.scroll_area_layout.addWidget(self.qr_code_label)
         self.scroll_area.setWidget(self.scroll_area_content)
         layout.addWidget(self.scroll_area)
 
-        # Botão para ampliar o QR Code
         self.maximize_qr_btn = QPushButton('Ampliar QR Code', self)
         self.maximize_qr_btn.clicked.connect(self.maximize_qr_code)
+        self.maximize_qr_btn.setEnabled(False)  # Inicialmente desativado
         layout.addWidget(self.maximize_qr_btn)
-        
-        # Adicionando o botão "Local API"
-        self.local_api_btn = QPushButton('Local API', self)
-        self.local_api_btn.clicked.connect(self.show_local_api_options)
-        layout.addWidget(self.local_api_btn)
 
         self.setLayout(layout)
+        
+    def set_node_url(self):
+        """Define a URL do nó e ativa os botões se for válida."""
+        url = self.node_input.text().strip()  # Remove espaços em branco
+
+        # Verifica se a URL está vazia
+        if not url:
+            QtWidgets.QMessageBox.warning(self, 'URL do Nó', 'Por favor, insira uma URL válida do nó.')
+            return
+    
+        # Verifica se a URL inserida é a URL válida
+        if url == self.valid_node_url:
+            self.node_url = url  # Armazena a URL do nó
+            # Ativar os botões de funcionalidade
+            self.create_wallet_btn.setEnabled(True)
+            self.copy_private_key_btn.setEnabled(True)
+            self.check_balance_btn.setEnabled(True)
+            self.send_btn.setEnabled(True)
+            self.start_mining_btn.setEnabled(True)
+            self.maximize_qr_btn.setEnabled(True)
+            QtWidgets.QMessageBox.information(self, "Sucesso", "URL do nó confirmada com sucesso.")
+        else:
+            QtWidgets.QMessageBox.warning(self, "Erro", "URL do nó inválida. Verifique e tente novamente.")
+            # Desativar os botões de funcionalidade se a URL estiver incorreta
+            self.create_wallet_btn.setEnabled(False)
+            self.copy_private_key_btn.setEnabled(False)
+            self.check_balance_btn.setEnabled(False)
+            self.send_btn.setEnabled(False)
+            self.start_mining_btn.setEnabled(False)
+            self.maximize_qr_btn.setEnabled(False)
+
+            
+    def activate_buttons(self):
+        """Ativa os botões de funcionalidade."""
+        self.create_wallet_btn.setEnabled(True)
+        self.copy_private_key_btn.setEnabled(True)
+        self.check_balance_btn.setEnabled(True)
+        # Ativa outros botões conforme necessário
+
+    def create_wallet(self):
+        """Cria uma nova carteira usando a URL do nó."""
+        if not self.node_url:
+            self.display_error('Por favor, defina a URL do nó primeiro.')
+            return
+
+        try:
+            response = requests.get(f'{self.node_url}/wallet/create', timeout=5)
+            if response.status_code == 201:
+                wallet_info = response.json()
+                self.wallet_info.setText(f"Endereço: {wallet_info['address']}\nChave Privada: {wallet_info['private_key']}")
+            else:
+                self.display_error("Erro ao criar a carteira.")
+        except requests.exceptions.RequestException as e:
+            self.display_error(f"Erro de conexão: {e}")
+
+    def check_balance(self):
+        """Consulta o saldo de uma carteira na URL do nó especificado."""
+        if not self.node_url:
+            self.display_error('Por favor, defina a URL do nó primeiro.')
+            return
+
+        address = self.address_input.text().strip()
+        if not address:
+            self.balance_label.setText('Por favor, insira um endereço de carteira.')
+            return
+
+        try:
+            response = requests.get(f'{self.node_url}/balance/{address}')
+            if response.status_code == 200:
+                balance_info = response.json()
+                self.balance_label.setText(f'Saldo: {balance_info["balance"]}')
+            else:
+                self.balance_label.setText('Erro ao verificar o saldo.')
+        except Exception as e:
+            self.balance_label.setText(f'Erro: {e}')
+
+    def display_error(self, message):
+        """Exibe uma mensagem de erro."""
+        QtWidgets.QMessageBox.critical(self, 'Erro', message)
 
     def show_local_api_options(self):
         options = [
@@ -475,4 +555,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
