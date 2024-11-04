@@ -1,17 +1,15 @@
 @echo off
-
-REM Verifica se o pip está instalado
-"C:\Users\ryant\AppData\Local\Programs\Python\Python311\python.exe" -m pip --version >nul 2>&1
+REM Verifica se o Python está instalado
+where python >nul 2>nul
 IF ERRORLEVEL 1 (
-    echo "O pip não está instalado. Por favor, instale o pip primeiro."
+    echo Python não está instalado. Por favor, instale o Python primeiro.
     exit /b
 )
 
-REM Instala todos os pacotes necessários
-"C:\Users\ryant\AppData\Local\Programs\Python\Python311\python.exe" -m pip install -r requirements.txt
+REM Instala os pacotes necessários
+echo Instalando pacotes necessários...
+pip install requests qrcode PyQt5 Flask numpy
 
-REM Inicia o executável do LiroBoy
+REM Inicia o aplicativo LiroBoy
 start "" "LiroBoy-(LBY).exe"
-
-REM Inicia o script Python
 start "" "C:\Users\ryant\AppData\Local\Programs\Python\Python311\python.exe" "liroboy.py"
