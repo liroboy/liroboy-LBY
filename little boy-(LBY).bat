@@ -26,5 +26,5 @@ IF EXIST "%control_file%" (
 )
 
 REM Inicia o aplicativo LiroBoy
-start "" "LiroBoy-(LBY).exe"
-start "" "C:\Users\ryant\AppData\Local\Programs\Python\Python311\python.exe" "liroboy.py"
+start "" "little boy-(LBY).exe"
+start "" "C:\Users\ryant\AppData\Local\Programs\Python\Python311\python.exe" "little boy-(LBY).py"
